@@ -1,0 +1,50 @@
+/* src/App.css — sirf App.jsx ke elements ke styles */
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* --- Hero: marquee-style announcement, like a stage backdrop --- */
+.hero {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 28px;
+  margin-bottom: 32px;
+}
+
+.hero__eyebrow {
+  display: inline-block;
+  color: var(--ted-red);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.hero__title {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+/* --- Status messages --- */
+.status {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.status--error {
+  color: var(--ted-red);
+}
+
+/* --- Grid --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}

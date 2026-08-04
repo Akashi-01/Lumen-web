@@ -1,0 +1,73 @@
+/* src/components/TalkCard.css — sirf TalkCard.jsx ke elements ke styles */
+
+.talk-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  background: var(--card-surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.talk-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--spotlight-gold);
+}
+
+.talk-card__thumb-wrap {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+}
+
+.talk-card__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.talk-card:hover .talk-card__thumb {
+  transform: scale(1.05);
+}
+
+/* Spotlight glow that appears over the thumbnail on hover,
+   like a stage light hitting the speaker */
+.talk-card__spotlight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 30%,
+    rgba(242, 177, 52, 0.25),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.talk-card:hover .talk-card__spotlight {
+  opacity: 1;
+}
+
+.talk-card__body {
+  padding: 14px 16px 18px;
+}
+
+.talk-card__title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0 0 8px;
+}
+
+.talk-card__date {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0;
+}
