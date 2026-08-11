@@ -17,3 +17,9 @@ export async function getTalkById(videoId) {
   const data = await res.json();
   return data.talk;
 }
+
+export async function getRelatedTalks(videoId) {
+  const res = await fetch(`${BASE_URL}/${videoId}/related`);
+  if (!res.ok) throw new Error(`Failed to load related talks (status ${res.status})`);
+  return res.json(); // already a raw array, no unwrapping needed
+}

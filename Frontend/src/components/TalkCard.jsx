@@ -1,4 +1,5 @@
 // src/components/TalkCard.jsx
+import { Link } from "react-router-dom";
 import "./TalkCard.css";
 
 export default function TalkCard({ talk }) {
@@ -11,12 +12,7 @@ export default function TalkCard({ talk }) {
     : "";
 
   return (
-    <a
-      className="talk-card"
-      href={talk.link}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <Link className="talk-card" to={`/talk/${talk.videoId}`}>
       <div className="talk-card__thumb-wrap">
         <img
           className="talk-card__thumb"
@@ -30,6 +26,6 @@ export default function TalkCard({ talk }) {
         <p className="talk-card__title">{talk.title}</p>
         <p className="talk-card__date">{date}</p>
       </div>
-    </a>
+    </Link>
   );
 }

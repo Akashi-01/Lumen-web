@@ -14,6 +14,49 @@ router.get("/latest", async (req, res) => {
   }
 });
 
+router.get("/:videoId/related", async (req, res) => {
+  try {
+    const current = await Talk.findOne({ videoId: req.params.videoId });
+    if (!current) {
+      return res.status(404).json({ error: "Talk not found" });
+    }
+
+    // pull meaningful words from the title (skip short/common words)
+    const keywords = current.title
+      .split(" ")
+      .filter(word => word.length > 4)
+      .map(word => word.replace(/[^a-zA-Z0-9]/g, "")); // strip punctuation
+
+    let related = [];
+
+    if (keywords.length > 0) {
+      related = await Talk.find({
+        videoId: { $ne: current.videoId },
+        title: { $regex: keywords.join("|"), $options: "i" }
+      })
+        .sort({ publishedAt: -1 })
+        .limit(6);
+    }
+
+    // fallback: if keyword match found too few, pad with recent talks
+    if (related.length < 6) {
+      const excludeIds = [current.videoId, ...related.map(t => t.videoId)];
+      const fallback = await Talk.find({
+        videoId: { $nin: excludeIds }
+      })
+        .sort({ publishedAt: -1 })
+        .limit(6 - related.length);
+
+      related = [...related, ...fallback];
+    }
+
+    res.json(related);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch related talks" });
+  }
+});
+
 // GET /api/talks/:videoId
 router.get("/:videoId", async (req, res) => {
   try {
