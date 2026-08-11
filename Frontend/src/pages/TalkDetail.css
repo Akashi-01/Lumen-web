@@ -1,0 +1,148 @@
+/* src/pages/TalkDetail.css */
+
+.talk-detail {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+  color: #f5f5f5;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #ff595e;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* --- Video player --- */
+.player-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.player-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* --- Talk info --- */
+.talk-info {
+  margin-top: 28px;
+}
+
+.talk-info h1 {
+  font-size: 2rem;
+  line-height: 1.25;
+  margin: 0 0 10px;
+}
+
+.talk-date {
+  color: #9a9a9a;
+  font-size: 0.9rem;
+  margin: 0 0 16px;
+}
+
+.talk-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #d5d5d5;
+  margin-bottom: 20px;
+  white-space: pre-line;
+}
+
+.youtube-link {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #ff0000;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: opacity 0.2s ease;
+}
+
+.youtube-link:hover {
+  opacity: 0.85;
+}
+
+/* --- Related talks --- */
+.related-talks {
+  margin-top: 48px;
+  border-top: 1px solid #2a2a2a;
+  padding-top: 32px;
+}
+
+.related-talks h2 {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 18px;
+}
+
+.related-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #161616;
+  transition: transform 0.2s ease;
+}
+
+.related-card:hover {
+  transform: translateY(-4px);
+}
+
+.related-card img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+.related-card p {
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  margin: 0;
+  color: #eaeaea;
+
+  /* clamp to 2 lines so uneven title lengths don't break the grid */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* --- Loading / error states --- */
+.status {
+  text-align: center;
+  padding: 60px 20px;
+  color: #aaa;
+}
+
+.status--error a {
+  color: #ff595e;
+  display: block;
+  margin-top: 12px;
+}
