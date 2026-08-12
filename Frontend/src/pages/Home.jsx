@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import { getLatestTalks } from "../api/talks.js";
 import TalkCard from "../components/TalkCard.jsx";
+import TalkCardSkeleton from "../components/TalkCardSkeleton.jsx";
+
+const SKELETON_COUNT = 15; // match the 15 you request from getLatestTalks
 
 export default function Home() {
   const [talks, setTalks] = useState([]);
@@ -28,7 +31,11 @@ export default function Home() {
       </header>
 
       {status === "loading" && (
-        <p className="status status--loading">Bringing up the house lights…</p>
+        <div className="grid">
+          {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+            <TalkCardSkeleton key={i} />
+          ))}
+        </div>
       )}
 
       {status === "error" && (
