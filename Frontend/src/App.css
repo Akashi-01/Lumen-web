@@ -11,6 +11,10 @@
   border-bottom: 1px solid var(--line);
   padding-bottom: 28px;
   margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
 }
 
 .hero__eyebrow {

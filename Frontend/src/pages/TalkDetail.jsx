@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getTalkById, getRelatedTalks } from "../api/talks.js";
+import ThemeToggle from "../components/ThemeToggle.jsx";
 import "./TalkDetail.css";
 
 export default function TalkDetail() {
@@ -40,7 +41,10 @@ export default function TalkDetail() {
 
   return (
     <div className="talk-detail">
-      <Link to="/" className="back-link">← Back to all talks</Link>
+      <div className="talk-detail__topbar">
+        <Link to="/" className="back-link">← Back to all talks</Link>
+        <ThemeToggle />
+      </div>
 
       <div className="player-wrapper">
         <iframe

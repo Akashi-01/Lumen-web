@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getLatestTalks } from "../api/talks.js";
 import TalkCard from "../components/TalkCard.jsx";
 import TalkCardSkeleton from "../components/TalkCardSkeleton.jsx";
+import ThemeToggle from "../components/ThemeToggle.jsx";
 
 const SKELETON_COUNT = 15; // match the 15 you request from getLatestTalks
 
@@ -26,8 +27,11 @@ export default function Home() {
   return (
     <div className="page">
       <header className="hero">
-        <span className="hero__eyebrow">Now on the TED stage</span>
-        <h1 className="hero__title">Latest Ideas Worth Spreading</h1>
+        <div>
+          <p className="hero__eyebrow">Now on the TED Stage</p>
+          <h1 className="hero__title">Latest Ideas Worth Spreading</h1>
+        </div>
+        <ThemeToggle />
       </header>
 
       {status === "loading" && (
