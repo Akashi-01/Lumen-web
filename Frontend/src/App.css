@@ -52,3 +52,58 @@
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
 }
+
+.hero__search {
+  margin-top: 1rem;
+}
+
+.search-bar {
+  position: relative;
+  max-width: 480px;
+}
+
+.search-bar__input {
+  width: 100%;
+  padding: 0.75rem 2.25rem 0.75rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, #ccc);
+  font-size: 1rem;
+}
+
+.search-bar__clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+}
+
+.featured-talk {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.featured-talk__image {
+  width: 50%;
+  border-radius: 12px;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+
+.featured-talk__info {
+  flex: 1;
+}
+
+@media (max-width: 700px) {
+  .featured-talk {
+    flex-direction: column;
+  }
+  .featured-talk__image {
+    width: 100%;
+  }
+}
