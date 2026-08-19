@@ -1,5 +1,5 @@
 // src/pages/Home.jsx
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { getLatestTalks } from "../api/talks.js";
 import TalkCard from "../components/TalkCard.jsx";
 import TalkCardSkeleton from "../components/TalkCardSkeleton.jsx";
@@ -14,11 +14,18 @@ export default function Home() {
   const [status, setStatus] = useState("loading");
   const [errorMsg, setErrorMsg] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
+  const loaderRef = useRef(null);
+
+  // initial load (page 1)
   useEffect(() => {
-    getLatestTalks(15)
-      .then((data) => {
-        setTalks(data);
+    getLatestTalks(1)
+      .then(({ talks, hasMore }) => {
+        setTalks(talks);
+        setHasMore(hasMore);
         setStatus("ready");
       })
       .catch((err) => {
@@ -26,6 +33,34 @@ export default function Home() {
         setStatus("error");
       });
   }, []);
+
+  // fetch next page and append
+  const loadMore = useCallback(() => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    getLatestTalks(nextPage)
+      .then(({ talks: newTalks, hasMore: more }) => {
+        setTalks((prev) => [...prev, ...newTalks]);
+        setPage(nextPage);
+        setHasMore(more);
+      })
+      .catch((err) => setErrorMsg(err.message))
+      .finally(() => setLoadingMore(false));
+  }, [page, hasMore, loadingMore]);
+
+  // watch the sentinel div and trigger loadMore when it scrolls into view
+  useEffect(() => {
+    if (!loaderRef.current || searchTerm) return; // pause auto-load while filtering
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMore();
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [loadMore, searchTerm]);
 
   const featured = talks[0];
 
@@ -80,6 +115,22 @@ export default function Home() {
 
       {status === "ready" && searchTerm && filteredTalks.length === 0 && (
         <p className="status">No talks match "{searchTerm}".</p>
+      )}
+
+      {status === "ready" && !searchTerm && (
+        <>
+          <div ref={loaderRef} style={{ height: 1 }} />
+          {loadingMore && (
+            <div className="grid">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <TalkCardSkeleton key={`more-${i}`} />
+              ))}
+            </div>
+          )}
+          {!hasMore && (
+            <p className="status">You've reached the end.</p>
+          )}
+        </>
       )}
     </div>
   );

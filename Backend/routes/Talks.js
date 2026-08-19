@@ -3,12 +3,23 @@ const express = require("express");
 const router = express.Router();
 const Talk = require("../models/Talk");
 
-// GET /api/talks/latest?limit=12
+// GET /api/talks/latest?limit=12&page=1
 router.get("/latest", async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit) || 12, 50);
-    const talks = await Talk.find().sort({ publishedAt: -1 }).limit(limit);
-    res.json({ talks });
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const skip = (page - 1) * limit;
+
+    const [talks, total] = await Promise.all([
+      Talk.find().sort({ publishedAt: -1 }).skip(skip).limit(limit),
+      Talk.countDocuments()
+    ]);
+
+    res.json({
+      talks,
+      page,
+      hasMore: skip + talks.length < total
+    });
   } catch (err) {
     res.status(500).json({ error: "Could not read talks from database." });
   }
