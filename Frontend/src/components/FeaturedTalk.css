@@ -6,9 +6,9 @@
   margin: 2.5rem auto;
   padding: 1.5rem;
   border-radius: 20px;
-  background: var(--surface, #fff);
+  background: var(--card-surface);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--line);
 }
 
 .featured-talk__image-wrap {
@@ -54,11 +54,11 @@
   line-height: 1.25;
   font-weight: 700;
   margin: 0 0 1rem;
-  color: var(--text-primary, #1a1a1a);
+  color: var(--text-primary);
 }
 
 .featured-talk__description {
-  color: var(--text-secondary, #666);
+  color: var(--text-muted);
   font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 1.75rem;

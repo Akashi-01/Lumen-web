@@ -4,11 +4,10 @@
 
 const BASE_URL = "http://localhost:8080/api/talks";
 
-export async function getLatestTalks(limit = 12) {
-  const res = await fetch(`${BASE_URL}/latest?limit=${limit}`);
+export async function getLatestTalks(page = 1, limit = 15) {
+  const res = await fetch(`${BASE_URL}/latest?limit=${limit}&page=${page}`);
   if (!res.ok) throw new Error(`Failed to load talks (status ${res.status})`);
-  const data = await res.json();
-  return data.talks;
+  return res.json(); // { talks, page, hasMore }
 }
 
 export async function getTalkById(videoId) {
