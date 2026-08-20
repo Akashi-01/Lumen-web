@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import "./TalkCard.css";
 
-export default function TalkCard({ talk }) {
+export default function TalkCard({ talk, variant = "default" }) {
   const date = talk.publishedAt
     ? new Date(talk.publishedAt).toLocaleDateString(undefined, {
         year: "numeric",
@@ -12,7 +12,10 @@ export default function TalkCard({ talk }) {
     : "";
 
   return (
-    <Link className="talk-card" to={`/talk/${talk.videoId}`}>
+      <Link
+        className={`talk-card talk-card--${variant}`}
+        to={`/talk/${talk.videoId}`}
+      >
       <div className="talk-card__thumb-wrap">
         <img
           className="talk-card__thumb"

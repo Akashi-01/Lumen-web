@@ -1,20 +1,132 @@
-/* src/App.css — sirf App.jsx ke elements ke styles */
+/* src/App.css */
 
 .page {
+  position: relative;
   max-width: 1080px;
   margin: 0 auto;
   padding: 48px 24px 80px;
 }
 
+/* Fixed, invisible marker near the top of the page used purely to detect
+   scroll position via IntersectionObserver. Its position never changes,
+   regardless of the sticky header's own height — that decoupling is what
+   prevents the collapse from feeding back into its own trigger. */
+.scroll-sentinel {
+  position: absolute;
+  top: 90px;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  visibility: hidden;
+}
+
 /* --- Hero: marquee-style announcement, like a stage backdrop --- */
 .hero {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--stage-black);
   border-bottom: 1px solid var(--line);
-  padding-bottom: 28px;
+  padding-top: 10px;
+  padding-bottom: 20px;
   margin-bottom: 32px;
   display: flex;
+  flex-direction: column;
+  gap: 28px;
+  transition: padding 0.25s ease, gap 0.25s ease;
+}
+
+/* --- Top row: logo + search + auth + theme. Always visible, never
+   collapses — this is what stays pinned once you scroll. --- */
+.hero__topbar {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-start;
+  gap: 32px;
+  min-height: 72px;
+}
+
+.hero__brand {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.hero__logo {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.hero__brand-name {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+
+/* --- Heading: the big serif title, collapses away on scroll --- */
+.hero__heading {
+  overflow: hidden;
+  max-height: 160px;
+  opacity: 1;
+  transition: max-height 0.3s ease, opacity 0.25s ease, margin 0.3s ease;
+}
+
+.hero--scrolled {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  gap: 0;
+}
+
+.hero--scrolled .hero__heading {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+}
+
+.hero__actions {
+  display: flex;
+  align-items: center;
   gap: 16px;
+  flex-shrink: 0;
+}
+
+.hero__auth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 10px 18px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.hero__auth-btn--ghost {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.hero__auth-btn--ghost:hover {
+  background: var(--card-surface);
+}
+
+.hero__auth-btn--solid {
+  background: var(--ted-red);
+  color: #fff;
+}
+
+.hero__auth-btn--solid:hover {
+  background: #c4241a;
+  transform: translateY(-1px);
 }
 
 .hero__eyebrow {
@@ -46,15 +158,20 @@
   color: var(--ted-red);
 }
 
-/* --- Grid --- */
+/* --- Grid ---
+   grid-auto-flow: dense lets the featured (2-column) cards sit inline
+   with the rest of the pattern instead of leaving an empty cell behind
+   them when the next card doesn't fit the remaining row width. */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-auto-flow: dense;
   gap: 20px;
 }
 
 .hero__search {
-  margin-top: 1rem;
+  width: 280px;
+  max-width: 40vw;
 }
 
 .search-bar {
