@@ -2,9 +2,12 @@
 import "./TalkCard.css";
 import "./TalkCardSkeleton.css";
 
-export default function TalkCardSkeleton() {
+export default function TalkCardSkeleton({ variant = "default" }) {
   return (
-    <div className="talk-card talk-card--skeleton" aria-hidden="true">
+      <div
+        className={`talk-card talk-card--${variant} talk-card--skeleton`}
+        aria-hidden="true"
+      >
       <div className="talk-card__thumb-wrap">
         <div className="skeleton-block skeleton-block--thumb" />
       </div>
