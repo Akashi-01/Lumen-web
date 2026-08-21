@@ -158,6 +158,41 @@
   color: var(--ted-red);
 }
 
+/* --- Explore more CTA: replaces infinite scroll past HOME_TALK_LIMIT --- */
+.explore-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.explore-more__text {
+  color: var(--text-muted);
+  font-size: 15px;
+  margin: 0;
+}
+
+.explore-more__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ted-red);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.explore-more__btn:hover {
+  background: #c4241a;
+  transform: translateY(-1px);
+}
+
 /* --- Grid ---
    grid-auto-flow: dense lets the featured (2-column) cards sit inline
    with the rest of the pattern instead of leaving an empty cell behind
@@ -214,6 +249,33 @@
 
 .featured-talk__info {
   flex: 1;
+}
+
+/* --- Explore page header --- */
+.explore-header {
+  padding-top: 32px;
+  padding-bottom: 24px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.explore-header__back {
+  display: inline-block;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.explore-header__back:hover {
+  color: var(--text-primary);
+}
+
+.explore-header__title {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 32px;
+  margin: 0;
+  color: var(--text-primary);
 }
 
 @media (max-width: 700px) {

@@ -1,8 +1,10 @@
 // src/pages/Home.jsx
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { getLatestTalks } from "../api/talks.js";
+import { HOME_TALK_LIMIT } from "../constants.js";
 import TalkCard from "../components/TalkCard.jsx";
 import TalkCardSkeleton from "../components/TalkCardSkeleton.jsx";
 import ThemeToggle from "../components/ThemeToggle.jsx";
@@ -52,9 +54,10 @@ export default function Home() {
   }, []);
 
   // fetch next page and append
+    // Stops once the homepage has shown HOME_TALK_LIMIT talks — beyond that,
+  // we point people to /explore instead of scrolling forever.
   const loadMore = useCallback(() => {
-    if (loadingMore || !hasMore) return;
-    setLoadingMore(true);
+    if (loadingMore || !hasMore || talks.length >= HOME_TALK_LIMIT) return;
     const nextPage = page + 1;
     getLatestTalks(nextPage)
       .then(({ talks: newTalks, hasMore: more }) => {
@@ -64,11 +67,21 @@ export default function Home() {
       })
       .catch((err) => setErrorMsg(err.message))
       .finally(() => setLoadingMore(false));
-  }, [page, hasMore, loadingMore]);
-
+  }, [page, hasMore, loadingMore, talks.length]); 
+  
   // watch the sentinel div and trigger loadMore when it scrolls into view
-  useEffect(() => {
-    if (!loaderRef.current || searchTerm) return; // pause auto-load while filtering
+  //
+  // Bug fix: the sentinel <div ref={loaderRef}> only renders once
+  // status === "ready" (it doesn't exist during the initial "loading"
+  // state). This effect used to run only on [loadMore, searchTerm], so on
+  // first mount it found loaderRef.current === null and bailed out — and
+  // then never re-ran once the sentinel actually appeared, because
+  // `status` flipping to "ready" wasn't in its dependency list. Adding
+  // `status` here makes the effect re-run right when the sentinel div
+  // shows up, so the observer actually gets attached to it.
+    useEffect(() => {
+    // pause auto-load while filtering, or once we've hit the homepage cap
+    if (!loaderRef.current || searchTerm || talks.length >= HOME_TALK_LIMIT) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) loadMore();
@@ -77,7 +90,7 @@ export default function Home() {
     );
     observer.observe(loaderRef.current);
     return () => observer.disconnect();
-  }, [loadMore, searchTerm]);
+  }, [loadMore, searchTerm, status, talks.length]);
 
   const featured = talks[0];
 
@@ -165,13 +178,16 @@ export default function Home() {
         <p className="status">No talks match "{searchTerm}".</p>
       )}
 
-      {status === "ready" && !searchTerm && (
+            {status === "ready" && !searchTerm && talks.length < HOME_TALK_LIMIT && (
         <>
           <div ref={loaderRef} style={{ height: 1 }} />
-            {loadingMore && (
+          {loadingMore && (
             <div className="grid">
               {Array.from({ length: 6 }).map((_, i) => (
-                <TalkCardSkeleton key={`more-${i}`} />
+                <TalkCardSkeleton
+                  key={`more-${i}`}
+                  variant={cardVariant(gridTalks.length + i)}
+                />
               ))}
             </div>
           )}
@@ -179,6 +195,22 @@ export default function Home() {
             <p className="status">You've reached the end.</p>
           )}
         </>
+      )}
+
+      {status === "ready" && !searchTerm && talks.length >= HOME_TALK_LIMIT && (
+        hasMore ? (
+          <div className="explore-more">
+            <p className="explore-more__text">
+              You've seen our latest {HOME_TALK_LIMIT} talks.
+            </p>
+            <Link to="/explore" className="explore-more__btn">
+              Explore more talks
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        ) : (
+          <p className="status">You've reached the end.</p>
+        )
       )}
     </div>
   );
