@@ -6,7 +6,6 @@ import TalkDetail from "./pages/TalkDetail.jsx";
 import Explore from "./pages/Explore.jsx";
 import "./App.css";
 
-
 function ScrollToTop() {
   const { pathname } = useLocation();
 
