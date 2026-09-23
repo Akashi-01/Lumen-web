@@ -16,6 +16,7 @@
 require("dotenv").config();
 const connectDB = require("./db");
 const Talk = require("../models/Talk");
+const { generateTags } = require("./autoTag");
 
 const API_KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID || "UCAuUUnT6oDeKwE6v1NGQxug"; // TED's official channel
@@ -104,9 +105,10 @@ async function upsertTalks(items) {
         title !== "Deleted video"
       );
     })
-    .map((item) => {
+      .map((item) => {
       const videoId = item.snippet.resourceId.videoId;
       const thumb = item.snippet.thumbnails;
+      const description = item.snippet.description || "";
 
       const doc = {
         videoId,
@@ -120,7 +122,8 @@ async function upsertTalks(items) {
           thumb?.medium?.url ||
           thumb?.default?.url ||
           `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
-        description: item.snippet.description || "",
+        description,
+        tags: generateTags(item.snippet.title, description),   // NEW
       };
 
       return {

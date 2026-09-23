@@ -1,18 +1,29 @@
 // src/components/SearchBar.jsx
 import { useState } from "react";
 
-export default function SearchBar({ onSearch, placeholder = "Search talks by title..." }) {
-  const [value, setValue] = useState("");
+export default function SearchBar({
+  onSearch,
+  onSubmit,
+  placeholder = "Search talks by title...",
+  initialValue = "", 
+}) {
+  const [value, setValue] = useState(initialValue);
 
   const handleChange = (e) => {
     const val = e.target.value;
     setValue(val);
-    onSearch(val);
+    if (onSearch) onSearch(val);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && onSubmit) {
+      onSubmit(value);
+    }
   };
 
   const handleClear = () => {
     setValue("");
-    onSearch("");
+    if (onSearch) onSearch("");
   };
 
   return (
@@ -23,6 +34,7 @@ export default function SearchBar({ onSearch, placeholder = "Search talks by tit
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
       />
       {value && (
         <button

@@ -4,7 +4,9 @@ import { useEffect } from "react";
 import Home from "./pages/Home.jsx";
 import TalkDetail from "./pages/TalkDetail.jsx";
 import Explore from "./pages/Explore.jsx";
+import SearchResults from "./pages/Searchresults.jsx"; // NEW
 import "./App.css";
+
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -24,6 +26,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/talk/:videoId" element={<TalkDetail />} />
         <Route path="/explore" element={<Explore />} />
+        <Route path="/search" element={<SearchResults />} />
       </Routes>
     </BrowserRouter>
   );

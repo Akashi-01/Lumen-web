@@ -1,9 +1,9 @@
 // src/pages/Home.jsx
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { getLatestTalks } from "../api/talks.js";
+import { getLatestTalks, searchTalks } from "../api/talks.js";
 import { HOME_TALK_LIMIT } from "../constants.js";
 import TalkCard from "../components/TalkCard.jsx";
 import TalkCardSkeleton from "../components/TalkCardSkeleton.jsx";
@@ -15,6 +15,7 @@ import logo from "../assets/Lumen.png";
 const SKELETON_COUNT = 15; // match the 15 you request from getLatestTalks
 
 export default function Home() {
+  const navigate = useNavigate();
   const [talks, setTalks] = useState([]);
   const [status, setStatus] = useState("loading");
   const [errorMsg, setErrorMsg] = useState("");
@@ -126,7 +127,10 @@ export default function Home() {
           <div className="hero__actions">
             {status === "ready" && (
               <div className="hero__search">
-                <SearchBar onSearch={setSearchTerm} />
+                <SearchBar 
+                  onSearch={setSearchTerm} 
+                  onSubmit={(val) => navigate(`/search${val ? `?q=${encodeURIComponent(val)}` : ''}`)}
+                />
               </div>
             )}
             <button className="hero__auth-btn hero__auth-btn--ghost">

@@ -1,6 +1,7 @@
 // utils/feedParser.js
 const Parser = require("rss-parser");
 const Talk = require("../models/Talk");
+const { generateTags } = require("./autoTag");
 
 const parser = new Parser();
 
@@ -45,8 +46,10 @@ async function syncTalksFromFeed() {
     const xml = await response.text();
     const feed = await parser.parseString(xml);
 
-    const ops = feed.items.map(item => {
+        const ops = feed.items.map(item => {
       const videoId = item.id?.split(":").pop();
+      const description = item["media:group"]?.["media:description"]?.[0] || "";
+
       const doc = {
         videoId,
         title: item.title,
@@ -54,7 +57,8 @@ async function syncTalksFromFeed() {
         publishedAt: item.pubDate ? new Date(item.pubDate) : undefined,
         thumbnail: item["media:group"]?.["media:thumbnail"]?.[0]?.["$"]?.url
           || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
-        description: item["media:group"]?.["media:description"]?.[0] || ""
+        description,
+        tags: generateTags(item.title, description)   // NEW
       };
 
       return {
