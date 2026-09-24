@@ -68,6 +68,57 @@ router.get("/:videoId/related", async (req, res) => {
   }
 });
 
+router.get("/search", async (req, res) => {
+  try {
+    const { q, tags, minDuration, maxDuration, dateFrom, dateTo, sort } = req.query;
+    const limit = Math.min(parseInt(req.query.limit) || 12, 50);
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+    if (q) filter.$text = { $search: q };
+    if (tags) filter.tags = { $in: tags.split(",") };
+    if (minDuration || maxDuration) {
+      filter.durationSeconds = {};
+      if (minDuration) filter.durationSeconds.$gte = Number(minDuration);
+      if (maxDuration) filter.durationSeconds.$lte = Number(maxDuration);
+    }
+    if (dateFrom || dateTo) {
+      filter.publishedAt = {};
+      if (dateFrom) filter.publishedAt.$gte = new Date(dateFrom);
+      if (dateTo) filter.publishedAt.$lte = new Date(dateTo);
+    }
+
+    let query = Talk.find(filter);
+    if (q) {
+      query = query.select({ score: { $meta: "textScore" } }).sort({ score: { $meta: "textScore" } });
+    } else if (sort === "views") {
+      query = query.sort({ viewCount: -1 });
+    } else {
+      query = query.sort({ publishedAt: -1 });
+    }
+
+    const [talks, total] = await Promise.all([
+      query.skip(skip).limit(limit),
+      Talk.countDocuments(filter)
+    ]);
+
+    res.json({ talks, page, hasMore: skip + talks.length < total });
+  } catch (err) {
+    res.status(500).json({ error: "Search failed." });
+  }
+});
+
+// GET /api/talks/tags
+router.get("/tags", async (req, res) => {
+  try {
+    const tags = await Talk.distinct("tags");
+    res.json(tags);
+  } catch (err) {
+    res.status(500).json({ error: "Could not fetch tags." });
+  }
+});
+
 // GET /api/talks/:videoId
 router.get("/:videoId", async (req, res) => {
   try {

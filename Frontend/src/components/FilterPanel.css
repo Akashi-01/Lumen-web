@@ -1,0 +1,122 @@
+/* src/components/FilterPanel.css — sirf FilterPanel.jsx ke elements ke styles */
+
+.filter-panel {
+  background: var(--card-surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: fit-content;
+}
+
+.filter-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-panel__title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.filter-panel__clear {
+  background: none;
+  border: none;
+  color: var(--spotlight-gold);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.filter-panel__clear:hover {
+  text-decoration: underline;
+}
+
+.filter-panel__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.filter-panel__section:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.filter-panel__label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.filter-panel__hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.filter-panel__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.filter-panel__checkbox,
+.filter-panel__radio {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.filter-panel__radios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-panel__dates {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-panel__date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.filter-panel__date-field input[type="date"] {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--stage-black);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+/* Below ~900px, the panel sits above the results instead of beside them
+   (see SearchResults.css), so lay its sections out horizontally and let
+   them scroll rather than stacking into a tall block. */
+@media (max-width: 900px) {
+  .filter-panel {
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-x: auto;
+  }
+}

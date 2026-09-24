@@ -1,0 +1,25 @@
+/* src/pages/SearchResults.css — layout only; shared .page/.grid/.status
+   classes come from App.css, same as Explore.jsx uses. */
+
+.search-results__bar {
+  margin-top: 16px;
+  max-width: 480px;
+}
+
+.search-results__layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 28px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+.search-results__main {
+  min-width: 0; /* prevents the grid track from overflowing on narrow cards */
+}
+
+@media (max-width: 900px) {
+  .search-results__layout {
+    grid-template-columns: 1fr;
+  }
+}
