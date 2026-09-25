@@ -2,13 +2,12 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { getLatestTalks, searchTalks } from "../api/talks.js";
 import { HOME_TALK_LIMIT } from "../constants.js";
 import TalkCard from "../components/TalkCard.jsx";
 import TalkCardSkeleton from "../components/TalkCardSkeleton.jsx";
 import ThemeToggle from "../components/ThemeToggle.jsx";
-import SearchBar from "../components/SearchBar.jsx";
 import FeaturedTalk from "../components/FeaturedTalk.jsx";
 import logo from "../assets/Lumen.png";
 
@@ -19,7 +18,6 @@ export default function Home() {
   const [talks, setTalks] = useState([]);
   const [status, setStatus] = useState("loading");
   const [errorMsg, setErrorMsg] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -82,7 +80,7 @@ export default function Home() {
   // shows up, so the observer actually gets attached to it.
     useEffect(() => {
     // pause auto-load while filtering, or once we've hit the homepage cap
-    if (!loaderRef.current || searchTerm || talks.length >= HOME_TALK_LIMIT) return;
+    if (!loaderRef.current || talks.length >= HOME_TALK_LIMIT) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) loadMore();
@@ -91,24 +89,15 @@ export default function Home() {
     );
     observer.observe(loaderRef.current);
     return () => observer.disconnect();
-  }, [loadMore, searchTerm, status, talks.length]);
+  }, [loadMore, status, talks.length]);
 
   const featured = talks[0];
 
-  const filteredTalks = useMemo(() => {
-    if (!searchTerm) return talks;
-    return talks.filter((talk) =>
-      talk.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [talks, searchTerm]);
-
-    // The first talk is already shown big in <FeaturedTalk>, so leave it out
-  // of the grid below to avoid showing the same card twice. While
-  // searching, show the full match list instead (no separate hero shown).
+  // The first talk is already shown big in <FeaturedTalk>, so leave it out
+  // of the grid below to avoid showing the same card twice.
   const gridTalks = useMemo(() => {
-    if (searchTerm) return filteredTalks;
-    return filteredTalks.slice(1);
-  }, [filteredTalks, searchTerm]);
+    return talks.slice(1);
+  }, [talks]);
 
   // Every 5th card in the grid renders larger (2-column span, bigger type)
   // so the layout reads as an intentional, edited feed rather than a flat
@@ -126,12 +115,13 @@ export default function Home() {
           </div>
           <div className="hero__actions">
             {status === "ready" && (
-              <div className="hero__search">
-                <SearchBar 
-                  onSearch={setSearchTerm} 
-                  onSubmit={(val) => navigate(`/search${val ? `?q=${encodeURIComponent(val)}` : ''}`)}
-                />
-              </div>
+              <button 
+                className="hero__auth-btn hero__auth-btn--ghost" 
+                onClick={() => navigate('/search')}
+                aria-label="Search"
+              >
+                <FontAwesomeIcon icon={faSearch} />
+              </button>
             )}
             <button className="hero__auth-btn hero__auth-btn--ghost">
               Log in
@@ -166,7 +156,7 @@ export default function Home() {
         </p>
       )}
 
-      {status === "ready" && !searchTerm && (
+      {status === "ready" && (
         <FeaturedTalk talk={featured} />
       )}
 
@@ -178,11 +168,9 @@ export default function Home() {
         </div>
       )}
 
-      {status === "ready" && searchTerm && filteredTalks.length === 0 && (
-        <p className="status">No talks match "{searchTerm}".</p>
-      )}
 
-            {status === "ready" && !searchTerm && talks.length < HOME_TALK_LIMIT && (
+
+            {status === "ready" && talks.length < HOME_TALK_LIMIT && (
         <>
           <div ref={loaderRef} style={{ height: 1 }} />
           {loadingMore && (
@@ -201,7 +189,7 @@ export default function Home() {
         </>
       )}
 
-      {status === "ready" && !searchTerm && talks.length >= HOME_TALK_LIMIT && (
+      {status === "ready" && talks.length >= HOME_TALK_LIMIT && (
         hasMore ? (
           <div className="explore-more">
             <p className="explore-more__text">
